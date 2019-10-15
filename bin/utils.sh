@@ -16,7 +16,7 @@ download_path() {
 download_url() {
   local version=$1
 
-  echo "https://github.com/neovim/neovim/releases/download/${version}/nvim-${platform}.tar.gz"
+  echo "https://github.com/neovim/neovim/releases/download/v${version}/nvim-${platform}.tar.gz"
 }
 
 download_version() {
