@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/utils.sh"
+
+install_neovim() {
+  local install_type=$1
+  local version=$2
+  local install_path=$3
+  local concurrency=$3
+
+  if [ "$install_type" != "version" ]; then
+    echoerr "Cannot install specific ref from source, sorry."
+    echoerr "For a list of available versions, see \`asdf list-all neovim\`."
+    exit 1
+  fi
+
+  if [ "$TMPDIR" = "" ]; then
+    local tmp_download_dir=$(mktemp -d -t neovim_build_XXXXXX)
+  else
+    local tmp_download_dir=$TMPDIR
+  fi
+
+  echo "$tmp_download_dir"
+  local archive_path=$(download_path $version $tmp_download_dir)
+  download_version $version $archive_path
+
+    # running this in subshell
+    # we don't want to disturb current working dir
+    (
+    if ! type "tar" &>/dev/null; then
+      echo "ERROR: tar not found"
+      exit 1
+    fi
+
+    tar zxf $archive_path -C $install_path --strip-components=1 || exit 1
+  )
+}
+
+install_neovim "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH" "$ASDF_CONCURRENCY"
