@@ -10,7 +10,7 @@ download_path() {
   local version=$1
   local tmp_download_dir=$2
 
-  echo "$tmp_download_dir/neovim-${version}.zip"
+  echo "$tmp_download_dir/neovim-${version}.tar.gz"
 }
 
 download_url() {
