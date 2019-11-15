@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 
+opts="-sL"
+if [ -n "$GITHUB_API_TOKEN" ]; then
+ opts="$opts -H 'Authorization: token $GITHUB_API_TOKEN'"
+fi
+
 # Fetch all tag names, and get only second column. Then remove all unnecessary characters.
 list_of_versions=$(
-  curl -sL https://api.github.com/repos/neovim/neovim/tags \
+  curl $opts https://api.github.com/repos/neovim/neovim/tags \
     | grep name \
     | sed -r -e 's/^\s+".+":\s"v?(stable|nightly|[0-9]\.[0-9]\.[0-9])",?/\1/' \
     | sort \
