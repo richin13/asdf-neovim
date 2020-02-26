@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 
-auth=""
-if [ -n "$GITHUB_API_TOKEN" ]; then
- auth="-H 'Authorization: token $GITHUB_API_TOKEN'"
-fi
+function sort_versions() {
+  sed 'h; s/[+-]/./g; s/.p\([[:digit:]]\)/.z\1/; s/$/.z/; G; s/\n/ /' | \
+    LC_ALL=C sort -t. -k 1,1 -k 2,2n -k 3,3n -k 4,4n -k 5,5n | awk '{print $2}'
+}
 
 # Fetch all tag names, and get only second column. Then remove all unnecessary characters.
 list_of_versions=$(
-  curl -sL $auth https://api.github.com/repos/neovim/neovim/tags \
-    | grep name \
-    | sed -e 's/.* "v//;s/",//' \
-    | head -n +12
+  git ls-remote --heads --tags https://github.com/neovim/neovim.git \
+  | tail -n +31                                                     \
+  | awk '!/({})/ {print $2}'                                        \
+  | awk 'gsub("(refs/tags/)|(v)", "")'                              \
+  | sort_versions                                                   \
 )
 
 echo $list_of_versions
