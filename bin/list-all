@@ -9,9 +9,9 @@ fi
 list_of_versions=$(
   curl -sL $auth https://api.github.com/repos/neovim/neovim/tags \
     | grep name \
-    | sed -E -e 's/^\s+".+":\s"v?(stable|nightly|[0-9]\.[0-9]\.[0-9])",?/\1/' \
+    | sed -E -e 's/^\s+".+":\s"v?(untagged-0e014f77944d8517d79f|stable|nightly|[0-9]\.[0-9]\.[0-9])",?/\1/' \
     | sort \
-    | tail -n +13
+    | tail -n +14
 )
 
 echo $list_of_versions
