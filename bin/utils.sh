@@ -14,9 +14,13 @@ download_path() {
 }
 
 download_url() {
-  local version=$1
-
-  echo "https://github.com/neovim/neovim/releases/download/v${version}/nvim-${platform}.tar.gz"
+  local version_arg="$1"
+  if [[ "$version_arg" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    local version="v$1"
+  else
+    local version="$1"
+  fi
+  echo "https://github.com/neovim/neovim/releases/download/${version}/nvim-${platform}.tar.gz"
 }
 
 download_version() {
