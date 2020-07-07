@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
-  platform=linux64
-else
-  platform=macos
-fi
+case "$(uname -s)" in
+  "Linux")
+    platform=linux64
+    ;;
+  "Darwin")
+    platform=macos
+    ;;
+esac
 
 download_path() {
   local version=$1
