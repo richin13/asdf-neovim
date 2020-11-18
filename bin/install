@@ -1,39 +1,28 @@
 #!/usr/bin/env bash
 
-source "$(dirname "$0")/utils.sh"
-
 install_neovim() {
-  local install_type=$1
-  local version=$2
-  local install_path=$3
-  local concurrency=$3
+  local build_path
 
-  if [ "$install_type" != "version" ]; then
-    echoerr "Cannot install specific ref from source, sorry."
-    echoerr "For a list of available versions, see \`asdf list-all neovim\`."
-    exit 1
-  fi
+  if [ "$ASDF_INSTALL_TYPE" = "version" ]; then
+    build_path="$ASDF_DOWNLOAD_PATH"
 
-  if [ "$TMPDIR" = "" ]; then
-    local tmp_download_dir=$(mktemp -d -t neovim_build_XXXXXX)
+    mv -f "$build_path"/** "" 
   else
-    local tmp_download_dir=$TMPDIR
+    (
+      cd "$ASDF_DOWNLOAD_PATH"
+
+      if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX:PATH="
+      else
+        make CMAKE_BUILD_TYPE=Release \
+             CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX:PATH="
+      fi
+
+      make DESTDIR="${ASDF_INSTALL_PATH}" install
+    )
   fi
 
-  echo "$tmp_download_dir"
-  local archive_path=$(download_path $version $tmp_download_dir)
-  download_version $version $archive_path
-
-    # running this in subshell
-    # we don't want to disturb current working dir
-    (
-    if ! type "tar" &>/dev/null; then
-      echo "ERROR: tar not found"
-      exit 1
-    fi
-
-    tar zxf $archive_path -C $install_path --strip-components=1 || exit 1
-  )
+  rm -rf "$ASDF_DOWNLOAD_PATH"
 }
 
-install_neovim "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH" "$ASDF_CONCURRENCY"
+install_neovim
