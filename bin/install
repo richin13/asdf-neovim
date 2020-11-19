@@ -1,16 +1,22 @@
 #!/usr/bin/env bash
 
 install_neovim() {
-  local build_path
+  local install_type="$1"
+  local download_path="$2"
+  local install_path="$3"
 
-  if [ "$ASDF_INSTALL_TYPE" = "version" ]; then
-    build_path="$ASDF_DOWNLOAD_PATH"
-
-    mv -f "$build_path"/** "" 
+  if [ "$install_type" = "version" ]; then
+    # move the prebuilt artifact to the install path
+    mv -f "$download_path"/** "$install_path" 
   else
     (
-      cd "$ASDF_DOWNLOAD_PATH"
+      cd "$download_path" || exit 1
 
+      # compile neovim with some extra flags
+      # these flags add the install path to the rtp, allowing us to package up
+      # the runtime instead of installing it globally.
+      # I sourced these flags for the neovim/bot-ci repo, where the prebuilt
+      # artifacts are compiled.
       if [[ "$OSTYPE" == "linux-gnu" ]]; then
         make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX:PATH="
       else
@@ -18,11 +24,13 @@ install_neovim() {
              CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX:PATH="
       fi
 
-      make DESTDIR="${ASDF_INSTALL_PATH}" install
+      make DESTDIR="${install_path}" install
     )
   fi
 
-  rm -rf "$ASDF_DOWNLOAD_PATH"
+  # delete the download path with -f. I noticed there are some files that it
+  # will prompt you to delete. This avoids that.
+  rm -rf "$download_path"
 }
 
-install_neovim
+install_neovim "$ASDF_INSTALL_TYPE" "$ASDF_DOWNLOAD_PATH" "$ASDF_INSTALL_PATH"
