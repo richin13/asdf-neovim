@@ -16,4 +16,5 @@ git ls-remote --heads --tags https://github.com/neovim/neovim.git \
   | sort_versions
 )
 
+# shellcheck disable=SC2086
 echo $list_of_versions

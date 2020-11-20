@@ -1,39 +1,36 @@
 #!/usr/bin/env bash
 
-source "$(dirname "$0")/utils.sh"
-
 install_neovim() {
-  local install_type=$1
-  local version=$2
-  local install_path=$3
-  local concurrency=$3
+  local install_type="$1"
+  local download_path="$2"
+  local install_path="$3"
 
-  if [ "$install_type" != "version" ]; then
-    echoerr "Cannot install specific ref from source, sorry."
-    echoerr "For a list of available versions, see \`asdf list-all neovim\`."
-    exit 1
-  fi
-
-  if [ "$TMPDIR" = "" ]; then
-    local tmp_download_dir=$(mktemp -d -t neovim_build_XXXXXX)
+  if [ "$install_type" = "version" ]; then
+    # move the prebuilt artifact to the install path
+    mv -f "$download_path"/** "$install_path" 
   else
-    local tmp_download_dir=$TMPDIR
+    (
+      cd "$download_path" || exit 1
+
+      # compile neovim with some extra flags
+      # these flags add the install path to the rtp, allowing us to package up
+      # the runtime instead of installing it globally.
+      # I sourced these flags for the neovim/bot-ci repo, where the prebuilt
+      # artifacts are compiled.
+      if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX:PATH="
+      else
+        make CMAKE_BUILD_TYPE=Release \
+             CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX:PATH="
+      fi
+
+      make DESTDIR="${install_path}" install
+    )
   fi
 
-  echo "$tmp_download_dir"
-  local archive_path=$(download_path $version $tmp_download_dir)
-  download_version $version $archive_path
-
-    # running this in subshell
-    # we don't want to disturb current working dir
-    (
-    if ! type "tar" &>/dev/null; then
-      echo "ERROR: tar not found"
-      exit 1
-    fi
-
-    tar zxf $archive_path -C $install_path --strip-components=1 || exit 1
-  )
+  # delete the download path with -f. I noticed there are some files that it
+  # will prompt you to delete. This avoids that.
+  rm -rf "$download_path"
 }
 
-install_neovim "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH" "$ASDF_CONCURRENCY"
+install_neovim "$ASDF_INSTALL_TYPE" "$ASDF_DOWNLOAD_PATH" "$ASDF_INSTALL_PATH"
