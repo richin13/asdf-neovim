@@ -34,7 +34,7 @@ download_url() {
   local install_type=$1
   local version_arg=$2
   local version
-  if [[ "${version_arg}" =~ ^[0-9]+\.* ]] ; then
+  if [[ "${version_arg}" =~ ^[0-9]+\.* ]]; then
     version="v$2"
   else
     version="$2"
