@@ -39,4 +39,4 @@ jobs:
       - name: Install shfmt
         run: brew install shfmt
       - name: Run shfmt
-        run: shfmt -d .
+        run: shfmt -ci -i 2 -d .
