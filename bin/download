@@ -19,9 +19,9 @@ download_neovim() {
   archive_path=$(download_path "$version" "$tmp_download_dir")
   download_version "$install_type" "$version" "$archive_path"
 
-    # running this in subshell
-    # we don't want to disturb current working dir
-    (
+  # running this in subshell
+  # we don't want to disturb current working dir
+  (
     if ! type "tar" &>/dev/null; then
       echo "ERROR: tar not found"
       exit 1

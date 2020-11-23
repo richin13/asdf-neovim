@@ -7,7 +7,7 @@ install_neovim() {
 
   if [ "$install_type" = "version" ]; then
     # move the prebuilt artifact to the install path
-    mv -f "$download_path"/** "$install_path" 
+    mv -f "$download_path"/** "$install_path"
   else
     (
       cd "$download_path" || exit 1
@@ -21,7 +21,7 @@ install_neovim() {
         make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX:PATH="
       else
         make CMAKE_BUILD_TYPE=Release \
-             CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX:PATH="
+          CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX:PATH="
       fi
 
       make DESTDIR="${install_path}" install
