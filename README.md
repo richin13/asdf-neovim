@@ -1,6 +1,6 @@
 # asdf-neovim
 
-[![Build Status](https://travis-ci.org/richin13/asdf-neovim.svg?branch=master)](https://travis-ci.org/richin13/asdf-neovim)
+[![Build Status](https://github.com/richin13/asdf-neovim/workflows/Main%20workflow/badge.svg)](https://github.com/richin13/asdf-neovim/workflows/Main%20workflow/badge.svg)
 
 Neovim plugin for [asdf-vm](https://github.com/asdf-vm/asdf)
 
