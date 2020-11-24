@@ -5,6 +5,17 @@ install_neovim() {
   local download_path="$2"
   local install_path="$3"
 
+  if [ -z "$download_path" ]; then
+    #: We're on asdf 0.7.*
+    ASDF_DOWNLOAD_PATH="/tmp/asdf-neovim-$install_type-$ASDF_INSTALL_VERSION"
+    $download_path=$ASDF_DOWNLOAD_PATH
+    if [ -e $download_path ]; then
+      rm -rf $download_path
+    fi
+    mkdir $download_path
+    source "$(dirname "$0")/download"
+  fi
+
   if [ "$install_type" = "version" ]; then
     # move the prebuilt artifact to the install path
     mv -f "$download_path"/** "$install_path"
