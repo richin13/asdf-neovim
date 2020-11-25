@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# shellcheck source=bin/utils.sh
+source "$(dirname "$0")/utils.sh"
+
 install_neovim() {
   local install_type="$1"
   local download_path="$2"
@@ -8,12 +11,8 @@ install_neovim() {
   if [ -z "$download_path" ]; then
     #: We're on asdf 0.7.*
     ASDF_DOWNLOAD_PATH="/tmp/asdf-neovim-$install_type-$ASDF_INSTALL_VERSION"
-    $download_path=$ASDF_DOWNLOAD_PATH
-    if [ -e $download_path ]; then
-      rm -rf $download_path
-    fi
-    mkdir $download_path
-    source "$(dirname "$0")/download"
+    download_neovim "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_DOWNLOAD_PATH"
+    download_path=$ASDF_DOWNLOAD_PATH
   fi
 
   if [ "$install_type" = "version" ]; then
