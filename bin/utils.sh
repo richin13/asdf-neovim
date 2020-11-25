@@ -49,3 +49,31 @@ download_url() {
 
   return
 }
+
+download_neovim() {
+  local install_type=$1
+  local version=$2
+  local download_path=$3
+  local tmp_download_dir
+  local archive_path
+
+  if [ "$TMPDIR" = "" ]; then
+    tmp_download_dir=$(mktemp -d -t neovim_build_XXXXXX)
+  else
+    tmp_download_dir=$TMPDIR
+  fi
+
+  archive_path=$(download_path "$version" "$tmp_download_dir")
+  download_version "$install_type" "$version" "$archive_path"
+
+  # running this in subshell
+  # we don't want to disturb current working dir
+  (
+    if ! type "tar" &>/dev/null; then
+      echo "ERROR: tar not found"
+      exit 1
+    fi
+
+    tar zxf "$archive_path" -C "$download_path" --strip-components=1 || exit 1
+  )
+}
