@@ -11,8 +11,8 @@ install_neovim() {
   if [ -z "$download_path" ]; then
     #: We're on asdf 0.7.*
     ASDF_DOWNLOAD_PATH="/tmp/asdf-neovim-$install_type-$ASDF_INSTALL_VERSION"
+    download_path=$(mktemp -d -t "$ASDF_DOWNLOAD_PATH")
     download_neovim "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_DOWNLOAD_PATH"
-    download_path=$ASDF_DOWNLOAD_PATH
   fi
 
   if [ "$install_type" = "version" ]; then
