@@ -24,6 +24,25 @@ jobs:
           command: nvim --version
         env:
           GITHUB_API_TOKEN: ${{ github.token }}
+  plugin_test_v0_7:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Setup asdf v0.7.8
+        uses: asdf-vm/actions/setup@v1
+        with:
+          asdf_branch: v0.7.8
+      - name: Test plugin
+        uses: asdf-vm/actions/plugin-test@v1
+        with:
+          command: nvim --version
+        env:
+          GITHUB_API_TOKEN: ${{ github.token }}
   lint:
     runs-on: ubuntu-latest
     steps:

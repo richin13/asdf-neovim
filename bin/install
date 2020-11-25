@@ -1,9 +1,19 @@
 #!/usr/bin/env bash
 
+# shellcheck source=bin/utils.sh
+source "$(dirname "$0")/utils.sh"
+
 install_neovim() {
   local install_type="$1"
   local download_path="$2"
   local install_path="$3"
+
+  if [ -z "$download_path" ]; then
+    #: We're on asdf 0.7.*
+    download_path=$(mktemp -d -t "asdf-neovim-$install_type-$ASDF_INSTALL_VERSION-XXXX")
+    ASDF_DOWNLOAD_PATH="$download_path"
+    download_neovim "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_DOWNLOAD_PATH"
+  fi
 
   if [ "$install_type" = "version" ]; then
     # move the prebuilt artifact to the install path
