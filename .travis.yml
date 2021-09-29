@@ -1,8 +1,0 @@
-language: c
-script: asdf plugin-test neovim $TRAVIS_BUILD_DIR 'nvim --version'
-before_script:
-  - git clone https://github.com/asdf-vm/asdf.git asdf
-  - . asdf/asdf.sh
-os:
-  - linux
-  - osx
