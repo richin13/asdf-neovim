@@ -24,7 +24,7 @@ download_version() {
 
   download_url=$(download_url "$install_type" "$version")
 
-  rm "$download_path"
+  [ -f $download_path ] && rm "$download_path"
 
   echo "==> curl -Lo $download_path -C - $download_url"
   curl -Lo "$download_path" -C - "$download_url" || exit 1
