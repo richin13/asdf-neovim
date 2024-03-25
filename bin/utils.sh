@@ -1,14 +1,5 @@
 #!/usr/bin/env bash
 
-case "$(uname -s)" in
-  "Linux")
-    platform=linux64
-    ;;
-  "Darwin")
-    platform=macos
-    ;;
-esac
-
 download_path() {
   local version=$1
   local tmp_download_dir=$2
@@ -39,6 +30,26 @@ download_url() {
   else
     version="$2"
   fi
+
+  case "$(uname -s)" in
+    "Linux")
+      platform=linux64
+      ;;
+    "Darwin")
+      if [ "$version" = "nightly" ]; then
+        case "$(uname -p)" in
+          "arm")
+            platform=macos-arm64
+            ;;
+          *)
+            platform=macos-x86_64
+            ;;
+        esac
+      else
+        platform=macos
+      fi
+      ;;
+  esac
 
   if [ "$install_type" = "version" ]; then
     echo "https://github.com/neovim/neovim/releases/download/${version}/nvim-${platform}.tar.gz"
