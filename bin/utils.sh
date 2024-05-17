@@ -41,7 +41,7 @@ download_url() {
 		IFS='.' read -r -a version_array <<<"${version#v}"
 
 		# version_array[0] is the major version and version_array[1] is the minor version
-		if ((version_array[0] == 0 && version_array[1] < 10)); then
+		if ((version_array[0] == 0 && version_array[1] < 10)) && [[ ! $version =~ ^stable|nightly$ ]]; then
 			platform=macos
 		else
 			case "$(uname -p)" in
