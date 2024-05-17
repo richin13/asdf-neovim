@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/richin13/asdf-neovim/workflows/Main%20workflow/badge.svg)](https://github.com/richin13/asdf-neovim/workflows/Main%20workflow/badge.svg)
 
-Neovim plugin for [asdf-vm](https://github.com/asdf-vm/asdf)
+Neovim plugin for [asdf-vm](https://github.com/asdf-vm/asdf) & [mise](https://mise.jdx.dev/) (fka rtx)
 
 
 ## Install
