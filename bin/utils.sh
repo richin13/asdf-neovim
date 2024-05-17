@@ -31,30 +31,30 @@ download_url() {
     version="$2"
   fi
 
-	case "$(uname -s)" in
-	"Linux")
-		platform=linux64
-		;;
-	"Darwin")
-		# Check version is less than v0.10.0 - if it is, use the old platform name
-		# using IFS to split the version number into an array
-		IFS='.' read -r -a version_array <<<"${version#v}"
+  case "$(uname -s)" in
+    "Linux")
+      platform=linux64
+      ;;
+    "Darwin")
+      # Check version is less than v0.10.0 - if it is, use the old platform name
+      # using IFS to split the version number into an array
+      IFS='.' read -r -a version_array <<<"${version#v}"
 
-		# version_array[0] is the major version and version_array[1] is the minor version
-		if ((version_array[0] == 0 && version_array[1] < 10)) && [[ ! $version =~ ^stable|nightly$ ]]; then
-			platform=macos
-		else
-			case "$(uname -p)" in
-			"arm")
-				platform=macos-arm64
-				;;
-			*)
-				platform=macos-x86_64
-				;;
-			esac
-		fi
-		;;
-	esac
+      # version_array[0] is the major version and version_array[1] is the minor version
+      if ((version_array[0] == 0 && version_array[1] < 10)) && [[ ! $version =~ ^stable|nightly$ ]]; then
+        platform=macos
+      else
+        case "$(uname -p)" in
+          "arm")
+            platform=macos-arm64
+            ;;
+          *)
+            platform=macos-x86_64
+            ;;
+        esac
+      fi
+      ;;
+  esac
 
   if [ "$install_type" = "version" ]; then
     echo "https://github.com/neovim/neovim/releases/download/${version}/nvim-${platform}.tar.gz"
