@@ -33,8 +33,18 @@ download_url() {
 
   case "$(uname -s)" in
     "Linux")
-      arch=$(uname -m)
-      platform="linux-$arch"
+      # Check version is less than v0.10.3 - if it is, use the old platform name
+      # using IFS to split the version number into an array
+      IFS='.' read -r -a version_array <<<"${version#v}"
+
+      # version_array[0] is the major version, version_array[1] is the minor version and version_array[2] is the patch version
+      if (((version_array[0] == 0 && version_array[1] <= 9)) \
+          || ((version_array[0] == 0 && version_array[1] <= 10 && version_array[2] <= 3))) \
+          && [[ ! $version =~ ^stable|nightly$ ]]; then
+        platform=linux64
+      else
+        platform="linux-$(uname -m)"
+      fi
       ;;
     "Darwin")
       # Check version is less than v0.10.0 - if it is, use the old platform name
