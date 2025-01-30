@@ -33,7 +33,8 @@ download_url() {
 
   case "$(uname -s)" in
     "Linux")
-      platform=linux64
+      arch=$(uname -m)
+      platform="linux-$arch"
       ;;
     "Darwin")
       # Check version is less than v0.10.0 - if it is, use the old platform name
