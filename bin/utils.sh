@@ -43,7 +43,14 @@ download_url() {
           && [[ ! $version =~ ^stable|nightly$ ]]; then
         platform=linux64
       else
-        platform="linux-$(uname -m)"
+        case "$(uname -m)" in
+          "aarch64")
+            platform="linux-arm64"
+            ;;
+          *)
+            platform="linux64-$(uname -m)"
+            ;;
+        esac
       fi
       ;;
     "Darwin")
