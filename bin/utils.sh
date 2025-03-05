@@ -48,7 +48,7 @@ download_url() {
             platform="linux-arm64"
             ;;
           *)
-            platform="linux64-$(uname -m)"
+            platform="linux-$(uname -m)"
             ;;
         esac
       fi
