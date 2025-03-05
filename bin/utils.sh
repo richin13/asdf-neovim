@@ -41,9 +41,25 @@ download_url() {
       if (((version_array[0] == 0 && version_array[1] <= 9)) \
           || ((version_array[0] == 0 && version_array[1] <= 10 && version_array[2] <= 3))) \
           && [[ ! $version =~ ^stable|nightly$ ]]; then
-        platform=linux64
+        case "$(uname -m)" in
+          "aarch64")
+            # aaarch64 is not supported by the old platform name
+            echo "AArch64 is not supported by version prior to v0.10.4"
+            exit 1
+            ;;
+          *)  
+            platform=linux64
+            ;;
+          esac
       else
-        platform="linux-$(uname -m)"
+        case "$(uname -m)" in
+          "aarch64")
+            platform="linux-arm64"
+            ;;
+          *)
+            platform="linux-$(uname -m)"
+            ;;
+        esac
       fi
       ;;
     "Darwin")
